@@ -1,1 +1,219 @@
 
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOHIT JARVIS AI</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#050b18;
+  color:#e8faff;
+  font-family:Arial,sans-serif;
+  text-align:center;
+  min-height:100vh;
+}
+header{
+  padding:24px 10px;
+  color:#00d9ff;
+  font-size:27px;
+  font-weight:bold;
+  letter-spacing:3px;
+}
+.subtitle{color:#7c9eae;font-size:13px}
+.circle{
+  width:210px;
+  height:210px;
+  border:3px solid #00d9ff;
+  border-radius:50%;
+  margin:55px auto 25px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 20px #00bfff, inset 0 0 25px #006b99;
+  animation:glow 2s infinite alternate;
+}
+.core{
+  width:125px;
+  height:125px;
+  border:3px solid #8af3ff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  color:#00eaff;
+}
+@keyframes glow{
+  from{box-shadow:0 0 10px #00bfff}
+  to{box-shadow:0 0 40px #00d9ff}
+}
+#status{color:#00eaff;margin:20px}
+#response{
+  min-height:55px;
+  margin:20px;
+  padding:15px;
+  background:#101e32;
+  border-radius:12px;
+  color:#d9faff;
+}
+button{
+  border:1px solid #00d9ff;
+  background:#09243a;
+  color:white;
+  padding:14px 20px;
+  border-radius:30px;
+  margin:8px;
+  font-size:15px;
+}
+#mic{
+  background:#007caa;
+  font-size:20px;
+  padding:18px 30px;
+}
+input{
+  width:85%;
+  padding:15px;
+  border-radius:25px;
+  border:1px solid #00d9ff;
+  background:#101e32;
+  color:white;
+  font-size:16px;
+  margin-top:15px;
+}
+footer{color:#668b9e;padding:30px;font-size:12px}
+</style>
+</head>
+
+<body>
+
+<header>MOHIT JARVIS</header>
+<div class="subtitle">PERSONAL AI ASSISTANT</div>
+
+<div class="circle">
+  <div class="core">J</div>
+</div>
+
+<div id="status">SYSTEM ONLINE</div>
+
+<div id="response">
+  नमस्ते मोहित! मैं आपका JARVIS हूँ।
+  बताइए, मैं आपकी क्या मदद करूँ?
+</div>
+
+<button id="mic" onclick="listen()">🎙️ बोलिए</button>
+
+<br>
+
+<input id="command" placeholder="यहाँ अपना कमांड लिखें...">
+
+<br>
+
+<button onclick="runCommand()">SEND</button>
+<button onclick="speak('नमस्ते मोहित! मैं तैयार हूँ।')">TEST VOICE</button>
+
+<br>
+
+<button onclick="runQuick('समय बताओ')">🕒 समय</button>
+<button onclick="runQuick('तारीख बताओ')">📅 तारीख</button>
+<button onclick="runQuick('गूगल खोलो')">🌐 Google</button>
+<button onclick="runQuick('यूट्यूब खोलो')">▶ YouTube</button>
+
+<footer>POWERED BY MOHIT JARVIS AI<br>IRON MAN EDITION</footer>
+
+<script>
+const response = document.getElementById("response");
+const statusText = document.getElementById("status");
+
+function speak(text){
+  response.innerText = text;
+  if("speechSynthesis" in window){
+    speechSynthesis.cancel();
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.lang = "hi-IN";
+    msg.rate = 0.95;
+    speechSynthesis.speak(msg);
+  }
+}
+
+function runQuick(text){
+  document.getElementById("command").value = text;
+  runCommand();
+}
+
+function runCommand(){
+  let cmd = document.getElementById("command").value.toLowerCase().trim();
+
+  if(!cmd) return;
+
+  if(cmd.includes("समय") || cmd.includes("time")){
+    speak("अभी समय है " +
+      new Date().toLocaleTimeString("hi-IN"));
+  }
+  else if(cmd.includes("तारीख") || cmd.includes("date")){
+    speak("आज की तारीख है " +
+      new Date().toLocaleDateString("hi-IN"));
+  }
+  else if(cmd.includes("गूगल") || cmd.includes("google")){
+    speak("गूगल खोल रहा हूँ।");
+    setTimeout(()=>window.open("https://www.google.com","_blank"),700);
+  }
+  else if(cmd.includes("यूट्यूब") || cmd.includes("youtube")){
+    speak("यूट्यूब खोल रहा हूँ।");
+    setTimeout(()=>window.open("https://www.youtube.com","_blank"),700);
+  }
+  else if(cmd.includes("नमस्ते") || cmd.includes("hello")){
+    speak("नमस्ते मोहित! आपसे मिलकर अच्छा लगा।");
+  }
+  else if(cmd.includes("बंद") || cmd.includes("exit")){
+    speak("अलविदा मोहित!");
+  }
+  else{
+    speak("मोहित, अभी मैं यह कमांड नहीं समझ पाया।");
+  }
+}
+
+function listen(){
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+    speak("आपके ब्राउज़र में वॉइस रिकग्निशन उपलब्ध नहीं है।");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "hi-IN";
+  recognition.interimResults = false;
+
+  statusText.innerText = "LISTENING...";
+
+  recognition.onresult = function(event){
+    const text = event.results[0][0].transcript;
+    document.getElementById("command").value = text;
+    statusText.innerText = "COMMAND RECEIVED";
+    runCommand();
+  };
+
+  recognition.onerror = function(){
+    statusText.innerText = "VOICE ERROR";
+    speak("माइक्रोफोन में परेशानी है। दोबारा कोशिश करें।");
+  };
+
+  recognition.onend = function(){
+    if(statusText.innerText === "LISTENING..."){
+      statusText.innerText = "SYSTEM ONLINE";
+    }
+  };
+
+  recognition.start();
+}
+</script>
+
+</body>
+</html>
